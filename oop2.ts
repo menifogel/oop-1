@@ -1,11 +1,10 @@
-class Person {
+abstract class Person {
     firstName: string
     lastName: string
 
-    
     constructor(firstName: string, lastName: string){
         this.firstName = firstName;
-        this.lastName = lastName
+        this.lastName = lastName;
     }
 }
 
@@ -16,8 +15,9 @@ class Patient extends Person {
         super(firstName, lastName);
         this.patientID = patientID;
     }
-    dataPatient(): string | number {
-        return `the data of the patient ${this.firstName} ${this.lastName} is , id: ${this.patientID}`
+
+    displayDetails(): string {
+        return `Patient: ${this.firstName} ${this.lastName}, ID: ${this.patientID}`;
     }
 }
 
@@ -26,68 +26,108 @@ class Doctor extends Person {
     specialization: string;
 
     constructor(firstName: string, lastName: string, doctorID: number, specialization: string){
-        super(firstName,lastName)
+        super(firstName,lastName);
         this.doctorID = doctorID;
         this.specialization = specialization;
     }
-    dataDoctor(): string | number {
-        return `the data of the doctor ${this.firstName} ${this.lastName} is , id: ${this.doctorID}, specialize in :${this.specialization}`
+
+    displayDetails(): string {
+        return `Doctor: ${this.firstName} ${this.lastName}, ID: ${this.doctorID}, Specialization: ${this.specialization}`;
     }
 }
 
 class Appointment {
-    Patient: Patient;
-    Doctor: Doctor;
-    Date : string;
-    time: string;
+        patient: Patient;
+        doctor: Doctor;
+        date : string;
+        time: string;
+    
+        constructor(patient: Patient, doctor: Doctor, date : string, time: string){
+            this.patient = patient;
+            this.doctor = doctor;
+            this.date = date;
+            this.time = time;
+        }
 
-    constructor(Patient: Patient, Doctor: Doctor, Date : string, time: string){
-        this.Patient = Patient;
-        this.Doctor = Doctor;
-        this.Date = Date;
-        this.time = time;
-    }
-
-    dataAppointment(){
-        return `the oppointmet of patient ${Patient} in doctor ${Doctor} is in day ${this.Date} in the time ${this.time}`
+    displayDetails(): string {
+        return `Appointment Details - Date: ${this.date}, Time: ${this.time}\n${this.patient.displayDetails()}\n${this.doctor.displayDetails()}`;
     }
 }
 
 class Hospital {
-    Patient: Patient[];
-    Doctor: Doctor[];
-    Appointment: Appointment[];
-    Name: string;
-
-    
-    constructor(Patient: Patient[], Doctor: Doctor[], Appointment: Appointment[],  Name: string){
-        this.Patient = Patient;
-        this.Doctor = Doctor;
-        this.Appointment = Appointment;
-        this.Name = Name;
-    }
-    addNewPatient(Patient: Patient):void {
-        this.Patient.push(Patient)
-    }
-    addNewDoctor(Doctor: Doctor):void {
-        this.Doctor.push(Doctor)
-    }
-    addNewAppointment(Appointment: Appointment):void{
-        this.Appointment.push(Appointment)
+    patients: Patient[] = [];
+    doctors: Doctor[] = [];
+    appointments: Appointment[] = [];
+    name: string;
+    constructor(name: string) {
+        this.name = name;
     }
 
+    addNewPatient(patient: Patient): void {
+        this.patients.push(patient);
+    }
+
+    addNewDoctor(doctor: Doctor): void {
+        this.doctors.push(doctor);
+    }
+
+    addNewAppointment(appointment: Appointment): void {
+        this.appointments.push(appointment);
+    }
+    displayAllAppointments(): void {
+        console.log("All Appointments:");
+        this.appointments.forEach((appointment) => {
+            console.log(appointment.displayDetails());
+        });
+    }
+    displayAppointmentsByPatientID(id: number): void {
+        this.appointments.forEach((appointment) => {
+            if (appointment.patient.patientID === id){
+                console.log(appointment.displayDetails());
+            } 
+        });
+    } 
+    displayAppointmentsByDoctorID(id: number): void {
+        this.appointments.forEach((appointment) => {
+            if (appointment.doctor.doctorID === id){
+                console.log(appointment.displayDetails());
+            } 
+        });
+    } 
+    displayAppointmentsToday(Todaydate: string): void {
+        this.appointments.forEach((appointment) => {
+            if (appointment.date == Todaydate){
+                console.log(appointment.displayDetails());
+            } 
+        });   
+    } 
 }
 
-
-
-
-const patient1 = new Patient("menachem", "cohen", 1);
-const doctor1 = new Doctor("Dr. stiv", "Smith", 101, "Cardiologist");
+const patient1 = new Patient("Menachem", "Cohen", 1);
+const doctor1 = new Doctor("Dr. Stiv", "Smith", 101, "Cardiologist");
 const appointment1 = new Appointment(patient1, doctor1, "2023-08-27", "10:00 AM");
-const hospital = new Hospital([patient1],[doctor1],[appointment1],'rmbm');
-console.log(hospital);
 
+const patient2 = new Patient("Sarah", "Johnson", 2);
+const doctor2 = new Doctor("Dr. Emily", "Brown", 102, "Pediatrician");
+const appointment2 = new Appointment(patient2, doctor2, "2023-08-28", "2:30 PM");
 
-// let d = new Doctor('meni','fogel',123123,'noirolog')
-// let dataD = d.dataDoctor()
-// console.log(dataD)
+const patient3 = new Patient("David", "Lee", 3);
+const doctor3 = new Doctor("Dr. Michael", "Wilson", 103, "Orthopedic Surgeon");
+const appointment3 = new Appointment(patient3, doctor3, "2023-08-29", "11:15 AM");
+const appointment4 = new Appointment(patient1, doctor2, "2023-08-30", "11:15 AM");
+
+const hospital = new Hospital("My Hospital");
+hospital.addNewPatient(patient1);
+hospital.addNewDoctor(doctor1);
+hospital.addNewAppointment(appointment1);
+hospital.addNewPatient(patient2);
+hospital.addNewDoctor(doctor2);
+hospital.addNewAppointment(appointment2);
+hospital.addNewAppointment(appointment4);
+// hospital.displayAllAppointments()
+// hospital.displayAppointmentsByPatientID(1)
+// hospital.displayAppointmentsByDoctorID(102)
+// hospital.displayAppointmentsToday("2023-08-28")
+
+// console.log(hospital);
+// console.log(appointment2.displayDetails());
